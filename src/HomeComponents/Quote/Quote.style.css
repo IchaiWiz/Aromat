@@ -1,0 +1,19 @@
+.quote-section {
+    padding: 2rem;
+    background-color: #D2691E; /* Couleur Cannelle pour le fond */
+    text-align: center;
+    color: white;
+    font-family: 'Playfair Display', serif; /* Police élégante pour la citation */
+  }
+  
+  blockquote {
+    font-size: 1.5rem; /* Taille de la police pour la citation */
+    margin: 0;
+  }
+  
+  .author {
+    text-align: right; /* Alignement de l'auteur à droite */
+    margin-top: 1rem; /* Espace au-dessus du nom de l'auteur */
+    font-style: italic;
+  }
+  

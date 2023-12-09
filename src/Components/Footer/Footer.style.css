@@ -1,0 +1,17 @@
+.footer {
+    font-family: 'Playfair Display', serif;
+  }
+  
+  .subscribe-button {
+    margin-top: 1rem;
+    background-color: #F4C430; /* Couleur Safran pour le bouton */
+    color: white;
+  }
+  
+  .copy-right {
+    margin-top: 2rem;
+    font-size: '0.75rem';
+    text-align: center;
+    width: '100%';
+  }
+  

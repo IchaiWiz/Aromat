@@ -1,0 +1,33 @@
+.top-products {
+  padding: 2rem;
+  background-color: #fffaf0; /* un fond clair pour mettre en valeur les produits */
+  text-align: center;
+}
+
+.product-card {
+  text-align: center;
+}
+
+.product-image {
+  width: 100%;
+  height: 200px; /* Hauteur fixe pour toutes les images */
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.product-info {
+  padding: 1rem;
+}
+
+.product-rating {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #F4C430; /* Couleur Safran pour le rating */
+}
+
+.product-button {
+  margin-top: 1rem;
+  background-color: #FF5733; /* Couleur Paprika pour le bouton */
+  /* Autres styles de bouton si nécessaire */
+}

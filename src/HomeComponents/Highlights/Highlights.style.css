@@ -1,0 +1,20 @@
+.highlights {
+  padding: 2rem;
+  background-color: #fffaf0; /* un fond clair */
+  text-align: left;
+}
+
+.highlights-image {
+  background-image: url('../../../public/images/HighlightSpice.png'); /* Chemin vers l'image */
+  background-size: cover;
+  background-position: center;
+  height: 300px; /* Ajustez selon vos besoins */
+  border-radius: 10px; /* Bords arrondis pour l'image */
+}
+
+.highlights-button {
+  margin-top: 1rem;
+  background-color: #F4C430; /* Couleur Safran */
+  color: white;
+  /* Autres styles de bouton si nécessaire */
+}

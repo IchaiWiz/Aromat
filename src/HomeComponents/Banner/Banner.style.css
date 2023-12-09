@@ -1,0 +1,12 @@
+/* Banner.style.css */
+.banner-container {
+    width: 100%;
+    overflow: hidden; /* Assurez-vous que l'image ne dépasse pas les limites de la div */
+  }
+  
+  .banner-image {
+    width: 100%;
+    height: auto; /* Conserve l'aspect ratio de l'image */
+    display: block; /* Élimine tout espace supplémentaire sous l'image */
+  }
+  

@@ -1,0 +1,45 @@
+.header-root {
+  flex-grow: 1;
+}
+
+.appBar {
+  background-color: #fffaf0; /* Fond clair épice, différent du reste des sections */
+  color: #343837; /* Couleur texte Poivre Noir */
+}
+
+.logo {
+  flex-grow: 1;
+  font-family: 'Playfair Display', serif;
+}
+
+/* Alignement des éléments de la barre d'outils */
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Style des boutons de navigation */
+.nav-button {
+  color: #343837; /* Couleur Poivre Noir */
+  text-transform: none; /* Empêcher la mise en majuscule automatique */
+}
+
+/* Style des icônes */
+.icon-button {
+  color: #343837; /* Couleur Poivre Noir */
+}
+
+/* Styles pour les boutons d'actions mobiles */
+.mobile-menu-button {
+  display: none;
+}
+
+/* Afficher le bouton de menu mobile uniquement sur les petits écrans */
+@media (max-width: 600px) {
+  .nav-button {
+    display: none;
+  }
+  .mobile-menu-button {
+    display: inline-flex;
+  }
+}
