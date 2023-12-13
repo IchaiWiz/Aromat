@@ -1,0 +1,38 @@
+/* ProductOverview.style.css */
+.product-image {
+    width: 100%; /* utilisez 100% pour s'assurer qu'il remplit le conteneur parent */
+    height: auto; /* maintient l'aspect ratio de l'image */
+    object-fit: cover; /* couvre la zone disponible, peut être recadré si nécessaire */
+    max-height: 400px; /* ou toute autre hauteur fixe selon vos besoins */
+  }
+  
+  /* Vous pouvez ajouter d'autres styles CSS ici si nécessaire pour affiner l'alignement et l'apparence */
+/* ProductOverview.style.css */
+.product-image-main {
+    width: 100%;
+    max-width: 100%; /* Ajustez la taille selon vos besoins */
+    height: auto;
+    object-fit: cover;
+  }
+  
+/* ProductOverview.style.css */
+.product-image-thumbnail {
+    width: auto; /* Garde le ratio d'aspect original */
+    max-width: 100%; /* Limite la largeur de l'image à la largeur du conteneur */
+    max-height: 14vh; /* Hauteur maximale pour réduire la taille de l'image */
+    object-fit: contain; /* Garantit que toute l'image est visible, éventuellement entourée d'espace */
+    object-position: center; /* Centre l'image dans le cadre */
+    border: 1px solid rgba(0, 0, 0, 0.12); /* Ajoute un cadre pour indiquer la possibilité de cliquer */
+  }
+
+.add-to-cart-button {
+    margin-top: 1rem !important;
+    margin-right: 10% !important; /* 20% of the parent container */
+}
+  
+  @media (max-width: 600px) {
+    .product-image-thumbnail {
+      max-height: 75px; 
+      width: 'auto'; 
+    }
+  }

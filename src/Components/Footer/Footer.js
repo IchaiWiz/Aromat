@@ -22,8 +22,8 @@ const Footer = () => {
                 fullWidth
                 sx={{ mr: 1 }}
               />
-              <Button variant="contained" size="large" sx={{ bgcolor: '#F4C430' }}>
-                +
+              <Button variant="contained" size="large" color="button">
+                SUBSCRIBE
               </Button>
             </Box>
           </Grid>

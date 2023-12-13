@@ -15,8 +15,26 @@
   border-radius: 10px;
 }
 
+.product-card img {
+  width: 100%; /* utilisez 100% pour s'assurer qu'il remplit le conteneur parent */
+  height: auto; /* maintient l'aspect ratio de l'image */
+  object-fit: cover; /* couvre la zone disponible, peut être recadré si nécessaire */
+  max-height: 200px; /* ou toute autre hauteur fixe selon vos besoins */
+}
+
+.product-price {
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 2.25rem; /* Augmenter la taille de la police pour le prix */
+  font-size: large; /* Rendre le prix plus audacieux */
+  margin-bottom: 2rem; /* Ajouter un peu d'espace sous le prix */
+}
+
 .product-info {
   padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .product-rating {
@@ -24,10 +42,12 @@
   align-items: center;
   justify-content: center;
   color: #F4C430; /* Couleur Safran pour le rating */
+  margin-bottom: 0.5rem; /* Ajouter un peu d'espace sous les évaluations */
 }
 
+
 .product-button {
-  margin-top: 1rem;
+  margin-top: 2rem; /* Augmentez la valeur selon vos besoins */
   background-color: #FF5733; /* Couleur Paprika pour le bouton */
   /* Autres styles de bouton si nécessaire */
 }

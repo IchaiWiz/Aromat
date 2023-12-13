@@ -45,7 +45,7 @@ const CustomPacks = () => {
           <Box className="custom-box-button-container">
             <Button
               variant="contained"
-              color="primary"
+              color="button"
               className="custom-box-button"
             >
               Start Building Now

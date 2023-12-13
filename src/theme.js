@@ -9,6 +9,9 @@ const theme = createTheme({
     secondary: {
       main: '#FF5733', // Paprika
     },
+    button: {
+      main: '#f5f5dc', // Poivre Noir
+    },
     error: {
       main: '#D2691E', // Cannelle
     },
