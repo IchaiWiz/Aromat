@@ -5,9 +5,10 @@ import ShoppingCart from '@mui/icons-material/ShoppingCart';
 import SearchIcon from '@mui/icons-material/Search';
 import LanguageIcon from '@mui/icons-material/Language';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import { Link } from 'react-router-dom';
 import './Header.style.css';
 
-const pages = ['CATALOG', 'ABOUT US', 'BLOG', 'CONTACT US'];
+const pages = ['SHOP', 'ABOUT US', 'BLOG', 'CONTACT US'];
 const settings = ['PROFILE', 'ACCOUNT', 'DASHBOARD', 'LOGOUT'];
 
 const Header = () => {
@@ -81,7 +82,7 @@ const Header = () => {
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
               <Button key={page} sx={{ my: 2, color: 'black', display: 'block' }}>
-                {page}
+                <Link to={`/${page.toLowerCase().replace(/\s+/g, '')}`}>{page}</Link>
               </Button>
             ))}
           </Box>

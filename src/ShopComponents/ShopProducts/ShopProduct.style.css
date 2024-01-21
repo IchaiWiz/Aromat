@@ -1,0 +1,44 @@
+/* ShopProduct.style.css */
+.shop-container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+  
+  .product-card {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+  }
+  
+  .product-description {
+    font-size: 0.8rem; /* Petite taille de police pour la discrétion */
+    color: #757575; /* Couleur discrète pour le texte */
+    margin-top: 0.5rem; /* Un peu d'espace au-dessus de la description */
+    margin-bottom: 0.5rem; /* Un peu d'espace en dessous de la description */
+    height: 3rem; /* Fixe une hauteur pour s'assurer que toutes les cartes restent de la même taille */
+    overflow: hidden; /* Cache le texte qui dépasse */
+    text-overflow: ellipsis; /* Ajoute des points de suspension si le texte est trop long */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limite à trois lignes de texte */
+    -webkit-box-orient: vertical;
+  }
+  
+  /* Ajoutez d'autres styles ici si nécessaire */
+  .text {
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+  
+  .read-or-hide {
+    color: #0056b3;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+  
+  .read-or-hide:hover {
+    text-decoration: none;
+  }

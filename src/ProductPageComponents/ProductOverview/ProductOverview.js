@@ -22,7 +22,9 @@ import NatureIcon from '@mui/icons-material/Nature'; // Représente la durabilit
 import LocalDiningIcon from '@mui/icons-material/LocalDining'; // Représente l'usage culinaire
 import HealingIcon from '@mui/icons-material/Healing'; // Représente les bienfaits pour la santé
 import theme from "../../theme";
-import "./ProductOverview.style.css"; // Assurez-vous de créer ce fichier CSS
+import "./ProductOverview.style.css"; 
+import AddToCartDrawer from "../AddToCart/AddToCartDrawer";
+
 
 // Données statiques pour le produit exemple
 const staticProducts = {
@@ -75,7 +77,16 @@ const iconsMap = {
 
 const ProductOverview = ({ productId }) => {
   const product = staticProducts[productId];
-  const [selectedImage, setSelectedImage] = useState(product.image1); // État pour l'image sélectionnée
+  const [selectedImage, setSelectedImage] = useState(product.image1);
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+
+  const handleAddToCartClick = () => {
+    setDrawerOpen(true);
+  };
+
+  const handleCloseDrawer = () => {
+    setDrawerOpen(false);
+  };
 
   if (!product) {
     return <Typography>Product not found!</Typography>;
@@ -195,6 +206,7 @@ const ProductOverview = ({ productId }) => {
               variant="contained"
               className="add-to-cart-button"
               startIcon={<ShoppingCartIcon />}
+              onClick={handleAddToCartClick}
               sx={{
                 ml: { xs: 1, sm: 2 }, // Marge à gauche, plus grande sur sm et plus
                 backgroundColor: theme.palette.button.main,
@@ -204,8 +216,9 @@ const ProductOverview = ({ productId }) => {
               }}
             >
               ADD TO CART
-            </Button>
-          </Box>
+              </Button>
+      <AddToCartDrawer isOpen={isDrawerOpen} onClose={handleCloseDrawer} product={product} />
+    </Box>
         </Grid>
       </Grid>
     </Box>
