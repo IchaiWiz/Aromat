@@ -43,3 +43,8 @@
     display: inline-flex;
   }
 }
+
+.header-root .appBar {
+  border-bottom: 2px solid #E0E0E0; /* Ou une couleur de votre choix */
+}
+

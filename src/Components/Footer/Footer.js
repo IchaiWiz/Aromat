@@ -29,7 +29,7 @@ const Footer = () => {
           </Grid>
           {renderLinksColumn('NAVIGATION', ['Catalog', 'About us'])}
           {renderLinksColumn('CONNECT', ['FAQs', 'Shipping & Returns'])}
-          {renderLinksColumn('LEGAL', ['Privacy', 'Terms & Conditions'])}
+          {renderLinksColumn('LEGAL', ['Privacy'])}
           <Grid item xs={12} sm={4} md={2}>
             <Typography variant="subtitle1" gutterBottom>
               FOLLOW US

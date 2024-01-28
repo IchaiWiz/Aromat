@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import theme from './theme'; 
@@ -7,13 +7,20 @@ import HomePage from './HomeComponents/HomePage';
 import Footer from './Components/Footer/Footer';
 import ProductPage from '../src/ProductPageComponents/ProductPage'; // Supposons que vous ayez ce fichier
 import ShopPage from '../src/ShopComponents/ShopPage'; // Supposons que vous ayez ce fichier
+import Cart from './Components/Cart/Cart';
 
 function App() {
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const toggleCart = () => {
+    setIsCartOpen(!isCartOpen);
+  };
   return (
     <ThemeProvider theme={theme}>
       <Router>
-        <div className="App">
-          <Header />
+      <div className="App">
+      <Header openCart={toggleCart} />
+      <Cart isOpen={isCartOpen} toggleCart={toggleCart} />
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/product/:id" element={<ProductPage />} />

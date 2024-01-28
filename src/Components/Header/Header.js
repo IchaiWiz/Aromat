@@ -1,17 +1,27 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Box } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Box, ListItemIcon } from '@mui/material';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import ShoppingCart from '@mui/icons-material/ShoppingCart';
-import SearchIcon from '@mui/icons-material/Search';
-import LanguageIcon from '@mui/icons-material/Language';
 import MoreIcon from '@mui/icons-material/MoreVert';
+import ProfileIcon from '@mui/icons-material/Person'; // Exemple d'icône
+import SettingsIcon from '@mui/icons-material/Settings'; // Exemple d'icône
+import LogoutIcon from '@mui/icons-material/Logout'; // Exemple d'icône
+import Divider from '@mui/material/Divider';
 import { Link } from 'react-router-dom';
+import theme from '../../theme';
 import './Header.style.css';
 
-const pages = ['SHOP', 'ABOUT US', 'BLOG', 'CONTACT US'];
-const settings = ['PROFILE', 'ACCOUNT', 'DASHBOARD', 'LOGOUT'];
+const pages = ['HOME', 'SHOP'];
+const settings = [
+  { name: 'PROFILE', icon: <ProfileIcon /> },
+  { name: 'ACCOUNT', icon: <SettingsIcon /> },
+  { name: 'DASHBOARD', icon: <SettingsIcon /> },
+  { name: 'LOGOUT', icon: <LogoutIcon /> },
+];
 
-const Header = () => {
+
+
+const Header = ({openCart}) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
 
@@ -46,10 +56,22 @@ const Header = () => {
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
+      PaperProps={{
+        style: {
+          backgroundColor: theme.palette.background.paper,
+        },
+      }}
     >
       {pages.map((page) => (
         <MenuItem key={page} onClick={handleMenuClose}>
           <Typography textAlign="center">{page}</Typography>
+        </MenuItem>
+      ))}
+      <Divider />
+      {settings.map((setting) => (
+        <MenuItem key={setting.name} onClick={handleMenuClose}>
+          <ListItemIcon>{setting.icon}</ListItemIcon>
+          <Typography variant="inherit">{setting.name}</Typography>
         </MenuItem>
       ))}
     </Menu>
@@ -65,44 +87,48 @@ const Header = () => {
       transformOrigin={{ vertical: 'top', horizontal: 'right' }}
       open={isMenuOpen}
       onClose={handleMenuClose}
+      PaperProps={{
+        style: {
+          backgroundColor: theme.palette.background.paper, // Utiliser la couleur du papier de votre thème
+        },
+      }}
     >
       {settings.map((setting) => (
-        <MenuItem key={setting} onClick={handleMenuClose}>{setting}</MenuItem>
+        <MenuItem key={setting.name} onClick={handleMenuClose}>
+          <ListItemIcon>{setting.icon}</ListItemIcon>
+          <Typography variant="inherit">{setting.name}</Typography>
+        </MenuItem>
       ))}
     </Menu>
   );
 
   return (
     <div className="header-root">
-      <AppBar position="static" color="default" elevation={0} className="appBar">
+      <AppBar position="static" color="default" elevation={0} className="appBar" sx={{ backgroundColor: theme.palette.background.default }}>
         <Toolbar>
-          <Typography variant="h6" noWrap className="logo">
+          <Typography variant="h6" noWrap className="logo" sx={{ flexGrow: 1, fontFamily: 'Playfair Display' }}>
             Aromat
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
             {pages.map((page) => (
-              <Button key={page} sx={{ my: 2, color: 'black', display: 'block' }}>
-                <Link to={`/${page.toLowerCase().replace(/\s+/g, '')}`}>{page}</Link>
+              <Button key={page} sx={{ my: 2, color: theme.palette.primary.main, display: 'block' }}>
+                <Link to={page === 'HOME' ? '/' : `/${page.toLowerCase()}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                  {page}
+                </Link>
               </Button>
             ))}
           </Box>
-          <Box sx={{ flexGrow: 0 }}>
-            <IconButton size="large" aria-label="search" color="inherit">
-              <SearchIcon />
-            </IconButton>
-            <IconButton size="large" aria-label="display more actions" edge="end" color="inherit" onClick={handleProfileMenuOpen}>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+            <IconButton size="large" aria-label="account" onClick={handleProfileMenuOpen} sx={{ color: theme.palette.secondary.main }}>
               <AccountCircle />
             </IconButton>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+            <IconButton onClick={openCart} size="large" aria-label="shopping cart" sx={{ color: theme.palette.warning.main }}>
               <ShoppingCart />
             </IconButton>
-            <IconButton size="large" aria-label="change language" color="inherit">
-              <LanguageIcon />
-            </IconButton>
-            <IconButton size="large" edge="end" color="inherit" onClick={handleMobileMenuOpen}>
-              <MoreIcon />
-            </IconButton>
           </Box>
+          <IconButton size="large" edge="end" color="inherit" onClick={handleMobileMenuOpen} sx={{ display: { xs: 'flex', md: 'none' } }}>
+            <MoreIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
