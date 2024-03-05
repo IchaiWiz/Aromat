@@ -5,7 +5,7 @@ const Quote = () => {
   const [quote, setQuote] = useState({ author: '', quote_text: '' });
 
   useEffect(() => {
-    fetch('http://147.235.198.181:5000/api/random-quote')
+    fetch('http://10.0.0.12:5000/api/random-quote')
       .then(response => response.json())
       .then(data => setQuote(data))
       .catch(error => console.error('Error:', error));
