@@ -5,7 +5,7 @@ const Quote = () => {
   const [quote, setQuote] = useState({ author: '', quote_text: '' });
 
   useEffect(() => {
-    fetch('http://10.0.0.12:5000/api/random-quote')
+    fetch('https://355c-2a06-c701-4e27-d800-900a-4b6c-1a7a-3852.ngrok-free.app/api/random-quote')
       .then(response => response.json())
       .then(data => setQuote(data))
       .catch(error => console.error('Error:', error));
