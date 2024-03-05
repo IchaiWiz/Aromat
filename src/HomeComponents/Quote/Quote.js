@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Quote.style.css';
 
 const Quote = () => {
+  const [quote, setQuote] = useState({ author: '', quote_text: '' });
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/random-quote')
+      .then(response => response.json())
+      .then(data => setQuote(data))
+      .catch(error => console.error('Error:', error));
+  }, []);
+
   return (
     <div className="quote-section">
       <blockquote>
-        "Spices are the essence of life, adding flavor and color to every moment."
+        "{quote.quote_text}"
       </blockquote>
-      <p className="author">- John Doe</p>
+      <p className="author">- {quote.author}</p>
     </div>
   );
 };

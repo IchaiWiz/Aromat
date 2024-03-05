@@ -1,88 +1,91 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Grid,
-  Typography,
-  Button,
-  Rating,
-  Box,
-  Card,
-  CardMedia,
-  ListItemIcon,
+  Grid, Typography, Button, Rating, Box, Card, CardMedia, ListItemIcon, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import EventNoteIcon from "@mui/icons-material/EventNote";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import StarIcon from "@mui/icons-material/Star";
 import StarHalfIcon from "@mui/icons-material/StarHalf";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
-import SpaIcon from '@mui/icons-material/Spa'; // Représente des bienfaits sensoriels
-import VerifiedIcon from '@mui/icons-material/Verified'; // Représente la qualité
-import NatureIcon from '@mui/icons-material/Nature'; // Représente la durabilité
-import LocalDiningIcon from '@mui/icons-material/LocalDining'; // Représente l'usage culinaire
-import HealingIcon from '@mui/icons-material/Healing'; // Représente les bienfaits pour la santé
+import SpaIcon from '@mui/icons-material/Spa';
+import VerifiedIcon from '@mui/icons-material/Verified';
+import NatureIcon from '@mui/icons-material/Nature';
+import LocalDiningIcon from '@mui/icons-material/LocalDining';
+import HealingIcon from '@mui/icons-material/Healing';
 import theme from "../../theme";
 import "./ProductOverview.style.css"; 
 import AddToCartDrawer from "../AddToCart/AddToCartDrawer";
-
-
-// Données statiques pour le produit exemple
-const staticProducts = {
-  1: {
-    id: 1, // Ajoutez cet identifiant
-    name: "Truffle Oil",
-    image1: "../images/TruffeOil1.png",
-    image2: "../images/TruffeOil2.png",
-    image3: "../images/TruffeOil3.png",
-    image4: "../images/TruffeOil4.png",
-    rating: 5,
-    reviews: 15,
-    price: "$35",
-  },
-  2: {
-    id: 2, // Ajoutez cet identifiant
-    name: "Saffron",
-    image1: "../images/Saffran1.png",
-    image2: "../images/Saffran2.png",
-    image3: "../images/Saffran3.png",
-    image4: "../images/Saffran4.png",
-    rating: 4.5,
-    reviews: 27,
-    price: "$55",
-  },
-  3: {
-    id: 3, // Ajoutez cet identifiant
-    name: "Vanilla",
-    image1: "../images/Vanille1.png",
-    image2: "../images/Vanille2.png",
-    image3: "../images/Vanille3.png",
-    image4: "../images/Vanille4.png",
-    rating: 4.5,
-    reviews: 30,
-    price: "$50",
-  },
-};
+import { jwtDecode } from 'jwt-decode';
 
 const iconsMap = {
-  heart: <FavoriteBorderIcon />,
-  check: <CheckCircleIcon />,
-  note: <EventNoteIcon />,
   spa: <SpaIcon />,
   quality: <VerifiedIcon />,
   eco: <NatureIcon />,
   dining: <LocalDiningIcon />,
   health: <HealingIcon />,
-  // Ajoutez d'autres icônes ici selon vos besoins
 };
 
 const ProductOverview = ({ productId }) => {
-  const product = staticProducts[productId];
-  const [selectedImage, setSelectedImage] = useState(product.image1);
+  const [isErrorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [product, setProduct] = useState(null);
+  const [selectedImage, setSelectedImage] = useState('');
   const [isDrawerOpen, setDrawerOpen] = useState(false);
 
+  useEffect(() => {
+    fetch(`http://localhost:5000/api/product-details/${productId}`)
+      .then(response => response.json())
+      .then(data => {
+        setProduct(data);
+        setSelectedImage(data.images[0]);
+      })
+      .catch(error => console.error('There was an error!', error));
+  }, [productId]);
+
   const handleAddToCartClick = () => {
-    setDrawerOpen(true);
-  };
+    const token = localStorage.getItem('token');
+    
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        const userId = decoded.userId;
+  
+    if (userId && product) {
+      fetch('http://localhost:5000/api/add-to-cart', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: userId,
+          productId: product.product_id,
+          quantity: 1, 
+        }),
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.alreadyInCart) {
+          console.log('Produit déjà dans le panier.');
+        } else {
+          console.log(data.message);
+        }
+        setDrawerOpen(true); // Ouvre le drawer du panier que le produit soit ajouté ou déjà présent
+      })
+      .catch(error => {
+        console.error('There was an error:', error);
+      });
+    } else {
+      console.log('User ID or product information is missing');
+    }
+  } catch (error) {
+    console.error('Invalid token:', error);
+  }
+} else {
+  setErrorDialogOpen(true);
+  console.log('User is not logged in');
+}
+};
+  
+  
+  
 
   const handleCloseDrawer = () => {
     setDrawerOpen(false);
@@ -92,51 +95,21 @@ const ProductOverview = ({ productId }) => {
     return <Typography>Product not found!</Typography>;
   }
 
-  /*description des produits, à améliorer */
-
-  const descriptions = [
-    {
-      icon: "spa",
-      text: "Découvrez une ambiance enveloppante avec nos bougies parfumées, parfaites pour vos moments de détente.",
-    },
-    {
-      icon: "quality",
-      text: "Fabriqué avec les meilleurs ingrédients, notre huile de truffe apporte une touche de luxe à chaque plat.",
-    },
-    {
-      icon: "eco",
-      text: "Engagé envers la planète, notre safran est issu d'une agriculture durable respectueuse de l'environnement.",
-    },
-    {
-      icon: "dining",
-      text: "Polyvalent en cuisine, le safran rehausse vos plats de sa couleur dorée et de ses arômes délicats.",
-    },
-    {
-      icon: "health",
-      text: "Reconnu pour ses propriétés antioxydantes, le safran contribue au bien-être et à une alimentation équilibrée.",
-    },
-  ];
-
-  const handleImageClick = (image) => {
-    setSelectedImage(image);
-  };
-
   return (
     <Box sx={{ flexGrow: 1, m: 2 }}>
       <Grid container spacing={4}>
-        {/* Miniatures alignées à gauche */}
         <Grid item xs={2} sm={2} md={2} lg={1} xl={1}
           container
           direction="column"
           alignItems="flex-start"
           justifyContent="center"
         >
-          {[product.image1, product.image2, product.image3, product.image4].map((img, index) => (
+          {product.images.map((img, index) => (
             <Box key={index} sx={{ width: "100%", mb: 2, cursor: "pointer" }}>
               <Card 
                 sx={{ 
                   border: selectedImage === img ? `2px solid ${theme.palette.primary.main}` : "none",
-                  boxShadow: selectedImage === img ? 3 : 1, // Augmenter l'ombre si sélectionnée
+                  boxShadow: selectedImage === img ? 3 : 1,
                 }}
               >
                 <CardMedia
@@ -144,14 +117,13 @@ const ProductOverview = ({ productId }) => {
                   className={`product-image-thumbnail ${selectedImage === img ? "selected" : ""}`}
                   image={img}
                   alt={`${product.name} thumbnail ${index + 1}`}
-                  onClick={() => handleImageClick(img)}
+                  onClick={() => setSelectedImage(img)}
                 />
               </Card>
             </Box>
           ))}
         </Grid>
         
-        {/* Image principale */}
         <Grid item xs={10} sm={5} md={5} lg={5} xl={5}
           container
           justifyContent="center"
@@ -166,10 +138,12 @@ const ProductOverview = ({ productId }) => {
             />
           </Card>
         </Grid>
+
         <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
           <Typography gutterBottom variant="h5" component="h2">
             {product.name}
           </Typography>
+
           <Box sx={{ display: "flex", alignItems: "center", my: 1 }}>
             <Rating
               name="read-only"
@@ -181,23 +155,21 @@ const ProductOverview = ({ productId }) => {
               halfIcon={<StarHalfIcon fontSize="inherit" />}
             />
             <Typography sx={{ ml: 1 }}>({product.reviews} Reviews)</Typography>
-          </Box >
-          {descriptions.map((desc, index) => (
-            <Box
-              key={index}
-              sx={{ display: "flex", alignItems: "center", my: 6 }}
-            >
-              <ListItemIcon>{iconsMap[desc.icon]}</ListItemIcon>
-              <Typography variant="body3">{desc.text}</Typography>
+          </Box>
+
+          {Object.entries(product.details).map(([key, value], index) => (
+            <Box key={index} sx={{ display: "flex", alignItems: "center", my: 6 }}>
+              <ListItemIcon>{iconsMap[key]}</ListItemIcon>
+              <Typography variant="body2">{value}</Typography>
             </Box>
           ))}
-          {/* Prix et bouton */}
+
           <Box sx={{
             display: 'flex',
-            justifyContent: { xs: 'center', sm: 'space-between' }, // Centré sur xs, espacé sur sm et plus
+            justifyContent: { xs: 'center', sm: 'space-between' },
             alignItems: 'center',
             mt: 2,
-            px: 2, // Padding horizontal pour éviter que les éléments touchent les bords
+            px: 2,
           }}>
             <Typography variant="h6" component="p">
               {product.price}
@@ -208,7 +180,7 @@ const ProductOverview = ({ productId }) => {
               startIcon={<ShoppingCartIcon />}
               onClick={handleAddToCartClick}
               sx={{
-                ml: { xs: 1, sm: 2 }, // Marge à gauche, plus grande sur sm et plus
+                ml: { xs: 1, sm: 2 },
                 backgroundColor: theme.palette.button.main,
                 "&:hover": {
                   backgroundColor: theme.palette.button.dark,
@@ -216,11 +188,29 @@ const ProductOverview = ({ productId }) => {
               }}
             >
               ADD TO CART
-              </Button>
-      <AddToCartDrawer isOpen={isDrawerOpen} onClose={handleCloseDrawer} product={product} />
-    </Box>
+            </Button>
+            <AddToCartDrawer isOpen={isDrawerOpen} onClose={handleCloseDrawer} product={product} />
+          </Box>
         </Grid>
       </Grid>
+      <Dialog
+    open={isErrorDialogOpen}
+    onClose={() => setErrorDialogOpen(false)}
+    aria-labelledby="alert-dialog-title"
+    aria-describedby="alert-dialog-description"
+>
+    <DialogTitle id="alert-dialog-title">{"Erreur"}</DialogTitle>
+    <DialogContent>
+        <DialogContentText id="alert-dialog-description">
+            Vous devez être connecté pour ajouter des articles au panier.
+        </DialogContentText>
+    </DialogContent>
+    <DialogActions>
+        <Button onClick={() => setErrorDialogOpen(false)} color="primary">
+            Fermer
+        </Button>
+    </DialogActions>
+</Dialog>
     </Box>
   );
 };

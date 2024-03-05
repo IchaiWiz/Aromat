@@ -19,8 +19,10 @@ const CustomPacks = () => {
             Create Your Own Gift Box
           </Typography>
           <Typography variant="body1" paragraph style={{ color: "#343837" }}>
-            Select the items for your personalized gift box to create a gift box
-            unique to you.
+            We're excited to offer the option to build your own gift box very soon! This feature is under development as we expand our selection. Stay tuned for the opportunity to craft a gift that's uniquely yours.
+          </Typography>
+          <Typography variant="body1" paragraph style={{ color: "#343837", marginTop: "20px" }}>
+            Meanwhile, feel free to explore our current range of artisan gifts.
           </Typography>
           <Grid container spacing={2} justifyContent="center">
             <Grid item>
@@ -47,6 +49,7 @@ const CustomPacks = () => {
               variant="contained"
               color="button"
               className="custom-box-button"
+              disabled={true} // Désactiver le bouton jusqu'à ce que la fonctionnalité soit prête
             >
               Start Building Now
             </Button>

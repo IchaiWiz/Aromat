@@ -1,138 +1,220 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, Button, IconButton, Menu, MenuItem, Box, ListItemIcon } from '@mui/material';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import ShoppingCart from '@mui/icons-material/ShoppingCart';
-import MoreIcon from '@mui/icons-material/MoreVert';
-import ProfileIcon from '@mui/icons-material/Person'; // Exemple d'icône
-import SettingsIcon from '@mui/icons-material/Settings'; // Exemple d'icône
-import LogoutIcon from '@mui/icons-material/Logout'; // Exemple d'icône
-import Divider from '@mui/material/Divider';
-import { Link } from 'react-router-dom';
-import theme from '../../theme';
-import './Header.style.css';
+import React, { useState, useEffect } from "react";
+import { useUser } from "../../UserContext";
+import { useNavigate } from "react-router-dom";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  IconButton,
+  Menu,
+  MenuItem,
+  Box,
+  ListItemIcon,
+  Button,
+  Divider,
+} from "@mui/material";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import PersonIcon from "@mui/icons-material/Person";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import LogoutIcon from "@mui/icons-material/Logout";
+import theme from "../../theme";
+import "./Header.style.css";
+import AddToCartDrawer from "../../ProductPageComponents/AddToCart/AddToCartDrawer";
 
-const pages = ['HOME', 'SHOP'];
-const settings = [
-  { name: 'PROFILE', icon: <ProfileIcon /> },
-  { name: 'ACCOUNT', icon: <SettingsIcon /> },
-  { name: 'DASHBOARD', icon: <SettingsIcon /> },
-  { name: 'LOGOUT', icon: <LogoutIcon /> },
-];
+const Header = ({ openCart }) => {
+  const { user, logout } = useUser();
 
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = useState(null);
 
-
-const Header = ({openCart}) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
+  const isMobileMenuOpen = Boolean(mobileMenuAnchorEl);
   const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  // Handlers for opening and closing menus
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleMobileMenuOpen = (event) => {
-    setMobileMoreAnchorEl(event.currentTarget);
-  };
-
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
-
+  const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
+  const handleMobileMenuOpen = (event) =>
+    setMobileMenuAnchorEl(event.currentTarget);
   const handleMenuClose = () => {
     setAnchorEl(null);
-    handleMobileMenuClose();
+    setMobileMenuAnchorEl(null);
   };
 
-  // Mobile menu
-  const renderMobileMenu = (
-    <Menu
-      anchorEl={mobileMoreAnchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id="primary-search-account-menu-mobile"
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMobileMenuOpen}
-      onClose={handleMobileMenuClose}
-      PaperProps={{
-        style: {
-          backgroundColor: theme.palette.background.paper,
+  const [isCartOpen, setCartOpen] = useState(false);
+
+  const handleCartOpen = () => {
+    setCartOpen(true);
+  };
+
+  const handleCartClose = () => {
+    setCartOpen(false);
+  };
+
+
+  const navigateTo = (path) => {
+    navigate(path);
+    handleMenuClose();
+  };
+
+  const logoutAndNavigate = () => {
+    logout();
+    navigate("/signup");
+  };
+
+  const settings = user
+    ? [
+        {
+          name: `ID: ${user.userId}`,
+          icon: <AccountCircleIcon />,
+          action: () => {},
         },
-      }}
-    >
-      {pages.map((page) => (
-        <MenuItem key={page} onClick={handleMenuClose}>
-          <Typography textAlign="center">{page}</Typography>
-        </MenuItem>
-      ))}
-      <Divider />
-      {settings.map((setting) => (
-        <MenuItem key={setting.name} onClick={handleMenuClose}>
-          <ListItemIcon>{setting.icon}</ListItemIcon>
-          <Typography variant="inherit">{setting.name}</Typography>
-        </MenuItem>
-      ))}
-    </Menu>
+        user.status === "admin" && {
+          name: "DASHBOARD",
+          icon: <DashboardIcon />,
+          action: () => navigateTo("/dashboard"),
+        },
+        {
+          name: "PROFILE",
+          icon: <PersonIcon />,
+          action: () => navigateTo("/profil"),
+        },
+        {
+          name: "ORDERS",
+          icon: <ShoppingCartIcon />,
+          action: () => navigateTo("/OrdersPage"),
+        },
+        { name: "LOGOUT", icon: <LogoutIcon />, action: logoutAndNavigate },
+      ].filter(Boolean)
+    : [
+        {
+          name: "LOGIN",
+          icon: <LogoutIcon />,
+          action: () => navigateTo("/login"),
+        },
+        {
+          name: "SIGN UP",
+          icon: <LogoutIcon />,
+          action: () => navigateTo("/signup"),
+        },
+      ];
+
+
+  const renderMenuItem = (setting) => (
+    <MenuItem key={setting.name} onClick={setting.action}>
+      <ListItemIcon>{setting.icon}</ListItemIcon>
+      <Typography textAlign="center">{setting.name}</Typography>
+    </MenuItem>
   );
 
-  // Desktop menu
-  const renderMenu = (
+  const renderMenu = (anchor, isMobile = false) => (
     <Menu
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id="primary-search-account-menu"
+      anchorEl={anchor}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
       keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isMenuOpen}
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isMobile ? isMobileMenuOpen : isMenuOpen}
       onClose={handleMenuClose}
       PaperProps={{
-        style: {
-          backgroundColor: theme.palette.background.paper, // Utiliser la couleur du papier de votre thème
-        },
+        style: { backgroundColor: theme.palette.background.paper },
       }}
     >
-      {settings.map((setting) => (
-        <MenuItem key={setting.name} onClick={handleMenuClose}>
-          <ListItemIcon>{setting.icon}</ListItemIcon>
-          <Typography variant="inherit">{setting.name}</Typography>
-        </MenuItem>
-      ))}
+      {isMobile
+        ? [
+            ...["HOME", "SHOP"].map((page) => (
+              <MenuItem
+                key={page}
+                onClick={() =>
+                  navigateTo(page === "HOME" ? "/" : `/${page.toLowerCase()}`)
+                }
+              >
+                <Typography textAlign="center">{page}</Typography>
+              </MenuItem>
+            )),
+            <Divider key="divider" />,
+            ...settings.map((setting) => renderMenuItem(setting)),
+          ]
+        : settings.map((setting) => renderMenuItem(setting))}
     </Menu>
   );
 
   return (
     <div className="header-root">
-      <AppBar position="static" color="default" elevation={0} className="appBar" sx={{ backgroundColor: theme.palette.background.default }}>
+      <AppBar
+        position="static"
+        color="default"
+        elevation={0}
+        sx={{
+          backgroundColor: theme.palette.background.default,
+          borderBottom: 3,
+          borderColor: "divider",
+        }}
+      >
         <Toolbar>
-          <Typography variant="h6" noWrap className="logo" sx={{ flexGrow: 1, fontFamily: 'Playfair Display' }}>
+          <Typography
+            variant="h6"
+            noWrap
+            sx={{
+              flexGrow: 0, // Empêche "Aromat" de se rétrécir
+              minWidth: 100, // Assure un minimum de largeur pour le texte
+              cursor: "pointer",
+            }}
+            onClick={() => navigate("/")}
+          >
             Aromat
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
-              <Button key={page} sx={{ my: 2, color: theme.palette.primary.main, display: 'block' }}>
-                <Link to={page === 'HOME' ? '/' : `/${page.toLowerCase()}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-                  {page}
-                </Link>
+          <Box
+            sx={{
+              display: { xs: "none", md: "flex" },
+              justifyContent: "center",
+              width: "100%",
+              flexGrow: 1,
+            }}
+          >
+            {["HOME", "SHOP"].map((page) => (
+              <Button
+                key={page}
+                onClick={() =>
+                  navigateTo(page === "HOME" ? "/" : `/${page.toLowerCase()}`)
+                }
+                sx={{ my: 2, color: "text.primary", mx: 1.5 }}
+              >
+                {page}
               </Button>
             ))}
+            {/* Affichage conditionnel du bouton Dashboard pour les admins */}
+            {user && user.status === "admin" && (
+              <Button
+                onClick={() => navigateTo("/dashboard")}
+                sx={{ my: 2, color: "text.primary", mx: 1.5 }}
+              >
+                DASHBOARD
+              </Button>
+            )}
           </Box>
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
-            <IconButton size="large" aria-label="account" onClick={handleProfileMenuOpen} sx={{ color: theme.palette.secondary.main }}>
-              <AccountCircle />
+
+          <Box sx={{ display: "flex" }}>
+            <IconButton size="large" onClick={handleMenuOpen} color="inherit">
+              <AccountCircleIcon />
             </IconButton>
-            <IconButton onClick={openCart} size="large" aria-label="shopping cart" sx={{ color: theme.palette.warning.main }}>
-              <ShoppingCart />
+            <IconButton size="large" onClick={handleCartOpen} color="inherit">
+              <ShoppingCartIcon />
+            </IconButton>
+            <IconButton
+              size="large"
+              edge="end"
+              onClick={handleMobileMenuOpen}
+              color="inherit"
+              sx={{ display: { xs: "flex", md: "none" } }}
+            >
+              <MoreVertIcon />
             </IconButton>
           </Box>
-          <IconButton size="large" edge="end" color="inherit" onClick={handleMobileMenuOpen} sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <MoreIcon />
-          </IconButton>
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
+      <AddToCartDrawer isOpen={isCartOpen} onClose={handleCartClose} />
+      {renderMenu(anchorEl)}
+      {renderMenu(mobileMenuAnchorEl, true)}
     </div>
   );
 };
