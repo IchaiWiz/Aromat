@@ -11,15 +11,14 @@ const path = require('path');
 
 // Configuration de Multer
 const storage = multer.diskStorage({
-    destination: function(req, file, cb) {
-        // Chemin du dossier de destination
-        cb(null, 'C:/xampp/htdocs/Aromat');
-    },
-    filename: function(req, file, cb) {
-        // Générer un nom de fichier unique
-        cb(null, Date.now() + path.extname(file.originalname)); // Ajoute l'extension du fichier original
-    }
+  destination: function(req, file, cb) {
+      cb(null, 'Aromat/images'); // Chemin du dossier de destination sur le serveur
+  },
+  filename: function(req, file, cb) {
+      cb(null, Date.now() + path.extname(file.originalname)); // Générer un nom de fichier unique
+  }
 });
+
 
 const upload = multer({ storage: storage });
 
@@ -34,17 +33,20 @@ const stripe = require("stripe")(
   "sk_test_51OdXxoEJHb46mWX2KXd5jl4xendU1ApOOQGpnlGlfNpIkCglD6EVSKYONRVah8ODH8WcBxuiZsvfUwgwE75QeFXP00em9i0hUf"
 );
 
-const mysql = require("mysql");
+const mysql = require('mysql2');
 const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "Aromat",
+  host: 'localhost',
+  user: 'root',
+  password: '131406',
+  database: 'Aromat'
 });
 
-db.connect((err) => {
-  if (err) throw err;
-  console.log("Connected to the MySQL Server.");
+db.connect(error => {
+  if (error) {
+    console.error('An error occurred while connecting to the DB:', error);
+    return;
+  }
+  console.log('Connected to the database.');
 });
 
 const PORT = process.env.PORT || 5000;
@@ -69,6 +71,27 @@ app.get("/api/random-quote", (req, res) => {
     }
   });
 });
+
+app.get("/api/top-products", (req, res) => {
+  const query = `
+    SELECT p.product_id, p.name, p.description, p.price, p.stock, p.rating, p.review, (
+        SELECT image_url FROM productimages WHERE product_id = p.product_id ORDER BY RAND() LIMIT 1
+    ) AS image_url
+    FROM products p
+    ORDER BY p.rating DESC, p.review DESC
+    LIMIT 3
+  `;
+  db.query(query, (err, results) => {
+    if (err) {
+      console.log("Erreur lors de la requête à la base de données:", err);
+      res.status(500).send("Erreur lors de la récupération des produits");
+    } else {
+      console.log("Résultats obtenus avec succès:", results);
+      res.send(results);
+    }
+  });
+});
+
 
 app.post("/api/subscribe", async (req, res) => {
   console.log("Received subscription request:", req.body);
@@ -111,24 +134,6 @@ app.post("/api/subscribe", async (req, res) => {
         message: "Error sending confirmation email",
         error: error.toString(),
       });
-    }
-  });
-});
-
-app.get("/api/top-products", (req, res) => {
-  const query = `
-      SELECT p.product_id, p.name, p.description, p.price, p.stock, p.rating, p.review, (
-          SELECT image_url FROM ProductImages WHERE product_id = p.product_id ORDER BY RAND() LIMIT 1
-      ) AS image_url
-      FROM Products p
-      ORDER BY p.rating DESC, p.review DESC
-      LIMIT 3
-  `;
-  db.query(query, (err, results) => {
-    if (err) {
-      res.status(500).send("Erreur lors de la récupération des produits");
-    } else {
-      res.send(results);
     }
   });
 });
@@ -935,7 +940,8 @@ app.post("/api/add-product", upload.array("images", 4), async (req, res) => {
       // Insérer les chemins des images dans la table product_images
       await Promise.all(req.files.map(async (file) => {
         // Utilisez directement le chemin fourni par Multer
-        const imagePath = `http://localhost/Aromat/${file.filename}`; // Chemin relatif pour l'accès via URL
+        const imagePath = `http://aromat.cloud/images/${file.filename}`; // Utilisez l'URL complète accessible publiquement
+
 
         await query("INSERT INTO productimages (product_id, image_url) VALUES (?, ?)", [productId, imagePath]);
         console.log(`Fichier enregistré: ${imagePath}`);

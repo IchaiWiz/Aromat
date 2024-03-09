@@ -12,7 +12,7 @@ const TopProducts = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/top-products')
+    fetch('http://aromat.cloud/api/top-products')
       .then(response => response.json())
       .then(data => {
         setProducts(data);
